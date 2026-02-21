@@ -10,6 +10,9 @@ export async function generateSmartTips(locationContext) {
 
   const genAI = new GoogleGenerativeAI(API_KEY);
   const userProfile = localStorage.getItem('TRAVEL_STYLE') || "현지인처럼";
+  const userName = localStorage.getItem('USER_NAME') || "사용자";
+
+  // Use the absolute highest tier and smartest Gemini model available
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
   const prompt = `
