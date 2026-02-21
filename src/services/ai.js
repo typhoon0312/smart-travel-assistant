@@ -13,7 +13,7 @@ export async function generateSmartTips(locationContext) {
   const userName = localStorage.getItem('USER_NAME') || "사용자";
 
   // Use the absolute highest tier and smartest Gemini model available
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 
   const prompt = `
 당신은 스마트 여행 비서입니다. 사용자인 "${userName}"님이 "${locationContext}" 주변에서 여행 일정을 소화 중입니다.
@@ -71,7 +71,12 @@ export async function parseFreeformItinerary(freeformText) {
   if (!API_KEY) return null;
 
   const genAI = new GoogleGenerativeAI(API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-pro-latest",
+    generationConfig: {
+      responseMimeType: "application/json"
+    }
+  });
 
   const prompt = `
 당신은 현존하는 가장 완벽하고 똑똑한 여행 일정 추출 전문 AI 비서입니다. 
@@ -125,10 +130,13 @@ export async function parseFreeformItinerary(freeformText) {
       // 강제로 JSON 배열 구조 추출 시도
       const match = text.match(/\[\s*\{.*\}\s*\]/s);
       if (match) {
-        parsedData = JSON.parse(match[0]);
+        try {
+          parsedData = JSON.parse(match[0]);
+        } catch (e) {
+          throw new Error("Raw AI output was: " + text);
+        }
       } else {
-        console.error("완전한 JSON 파싱 실패:", err, text);
-        return [];
+        throw new Error("Raw AI output was: " + text);
       }
     }
 
@@ -146,7 +154,7 @@ export async function parseFreeformItinerary(freeformText) {
     return parsedData || [];
   } catch (error) {
     console.error("Error parsing freeform itinerary:", error);
-    return [];
+    throw error;
   }
 }
 
@@ -155,7 +163,7 @@ export async function generateVirtualTourExperience(eventInfo, currentIndex, tot
   if (!API_KEY) return "API 키가 설정되지 않아 가상 체험을 생성할 수 없습니다.";
 
   const genAI = new GoogleGenerativeAI(API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 
   const prompt = `
 당신은 생생한 여행 가이드입니다.
