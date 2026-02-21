@@ -67,6 +67,7 @@ export async function parseFreeformItinerary(freeformText) {
   const API_KEY = localStorage.getItem('GEMINI_API_KEY');
   if (!API_KEY) return null;
 
+  const genAI = new GoogleGenerativeAI(API_KEY);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
   const prompt = `
@@ -121,6 +122,7 @@ export async function generateVirtualTourExperience(eventInfo, currentIndex, tot
   const API_KEY = localStorage.getItem('GEMINI_API_KEY');
   if (!API_KEY) return "API 키가 설정되지 않아 가상 체험을 생성할 수 없습니다.";
 
+  const genAI = new GoogleGenerativeAI(API_KEY);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
   const prompt = `
