@@ -74,35 +74,39 @@ export async function parseFreeformItinerary(freeformText) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
   const prompt = `
-당신은 완벽하고 똑똑한 여행 일정 추출 전문 AI 비서입니다. 
-다음 사용자가 복사하여 붙여넣은 매우 길고 형식이 불규칙한 전체 일정 택스트를 처음부터 끝까지 정독하세요.문맥을 파악하여 각각의 장소 방문이나 이동 일정을 차례대로 꼼꼼히 뽑아내어 구글 캘린더에 연동할 수 있는 JSON 배열 형식으로만 반환해야 합니다.
-오직 유효한 JSON 배열만 반환해야 합니다. 마크다운 백틱(\`\`\`)을 포함하지 마세요. 사용자의 텍스트가 매우 길더라도 누락되는 일정이 없도록 모두 파싱하세요.
+당신은 현존하는 가장 완벽하고 똑똑한 여행 일정 추출 전문 AI 비서입니다. 
+다음 사용자가 복사하여 붙여넣은 매우 길고 형식이 불규칙한 전체 일정 텍스트를 처음부터 끝까지 정독하세요. 문맥을 파악하여 각각의 '장소 방문'이나 '이동 일정'을 차례대로 꼼꼼히 뽑아내어 구글 캘린더에 연동할 수 있는 JSON 배열 형식으로만 반환해야 합니다.
+
+오직 유효한 JSON 배열(Array)만 반환해야 합니다. 다른 어떤 설명이나 마크다운 백틱(\`\`\`)도 포함하지 마세요. 
+어떤 경우에도 {"schedule": [...]} 같은 형태로 감싸지 말고, 곧바로 배열 [...] 형태가 되도록 만드세요.
 
 입력 텍스트: "${freeformText}"
 
-형식 예시:
+가장 이상적인 반환 형식 (오직 이 형식만을 반환):
 [
   {
-    "summary": "신주쿠에서 쇼핑",
-    "location": "신주쿠, 도쿄",
-    "time": "10:00 AM",
-    "startTimeIso": "2024-10-24T10:00:00+09:00",
-    "endTimeIso": "2024-10-24T12:00:00+09:00"
-  },
-  {
-    "summary": "시부야 점심",
-    "location": "시부야 츠타야, 도쿄",
-    "time": "13:00 PM",
+    "summary": "1일차 점심 식사 (시부야)",
+    "location": "시부야역 근처, 도쿄",
+    "time": "13:00",
     "startTimeIso": "2024-10-24T13:00:00+09:00",
     "endTimeIso": "2024-10-24T14:30:00+09:00"
+  },
+  {
+    "summary": "메이지 신궁 관광",
+    "location": "메이지 신궁, 도쿄",
+    "time": "15:00",
+    "startTimeIso": "2024-10-24T15:00:00+09:00",
+    "endTimeIso": "2024-10-24T17:00:00+09:00"
   }
 ]
 
 참고사항: 
-- 텍스트 덩어리에서 시간, 장소, 할 일을 추론하여 하나하나 객체로 만드세요.
-- 날짜가 명시되지 않았다면 미래의 한 날짜(예: 이번 주말)를 기준으로 시간순으로 배치하세요.
-- 각 일정별 소요 시간을 문맥에 맞게 추정하여 startTimeIso와 endTimeIso를 구성하세요.
-- 한국 표준시(+09:00) 또는 현지 표준시 인코딩 포맷을 시와 분과 초 까지 정확히 준수하세요.
+- "N일차" 같은 정보가 있다면 요약(summary)에 적극 반영하세요.
+- 텍스트 덩어리에서 시간, 장소, 할 일을 지능적으로 추론하세요.
+- 날짜가 명시되지 않았다면 미래의 한 날짜(예: 한국 시간 기준 다음 달 1일 시작 점)를 기준으로 요일/일차의 흐름에 맞춰 날짜를 이어가세요.
+- 각 일정별 소요 시간을 문맥에 맞게 추정하여 startTimeIso와 endTimeIso(한국 표준시 +09:00)를 정확히 구성하세요.
+- 만약 호텔이나 숙소 등 체류 일정이 나오면 이를 별도의 긴 일정으로 취급하세요.
+- 절대로 텍스트만 빼놓거나 일정을 누락하지 마세요. 모든 행동 단위를 분리하세요.
 `;
 
   try {
@@ -114,7 +118,32 @@ export async function parseFreeformItinerary(freeformText) {
     } else if (text.startsWith('\`\`\`')) {
       text = text.substring(3, text.length - 3).trim();
     }
-    return JSON.parse(text);
+    let parsedData = null;
+    try {
+      parsedData = JSON.parse(text);
+    } catch (err) {
+      // 강제로 JSON 배열 구조 추출 시도
+      const match = text.match(/\[\s*\{.*\}\s*\]/s);
+      if (match) {
+        parsedData = JSON.parse(match[0]);
+      } else {
+        console.error("완전한 JSON 파싱 실패:", err, text);
+        return [];
+      }
+    }
+
+    // 만약 객체 형태로 반환했다면 (예: { schedule: [...] }) 배열로 변환
+    if (parsedData && !Array.isArray(parsedData)) {
+      const keys = Object.keys(parsedData);
+      for (const key of keys) {
+        if (Array.isArray(parsedData[key])) {
+          return parsedData[key];
+        }
+      }
+      return [parsedData];
+    }
+
+    return parsedData || [];
   } catch (error) {
     console.error("Error parsing freeform itinerary:", error);
     return [];
