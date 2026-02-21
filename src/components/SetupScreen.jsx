@@ -129,12 +129,83 @@ function SetupScreen({ onComplete, isEditing = false }) {
                             다음 단계로 <span className="material-symbols-outlined">arrow_forward</span>
                         </button>
 
-                        <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #333', textAlign: 'center' }}>
-                            <p style={{ fontSize: '13px', color: '#aaa', marginBottom: '8px' }}>맥미니 등 개인 PC를 서버로 만들고 스마트폰으로 접속하고 싶으신가요?</p>
+                        <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #333', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <p style={{ fontSize: '13px', color: '#aaa', marginBottom: '4px' }}>나만의 개인 서버로 구축하여 스마트폰에서 24시간 사용</p>
+                            <button className="action-button primary-bg text-white" onClick={() => setStep('vercel-guide')} style={{ padding: '8px 16px', fontSize: '13px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
+                                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>rocket_launch</span>
+                                평생 무료 Vercel 배포 가이드 (추천)
+                            </button>
                             <button className="action-button outline-button text-primary" onClick={() => setStep('guide')} style={{ border: '1px solid var(--primary)', padding: '8px 16px', fontSize: '13px' }}>
-                                📖 초보자용 외부 접속 서버 구축 가이드
+                                📖 맥미니/PC를 개인 서버로 만드는 홈링크 가이드
                             </button>
                         </div>
+                    </div>
+                )}
+
+                {step === 'vercel-guide' && (
+                    <div className="fade-in">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                            <h2 style={{ fontSize: '20px', margin: 0 }}>🚀 Vercel 1분 무료 배포</h2>
+                            <button className="icon-button padding-0" onClick={() => setStep(1)}>
+                                <span className="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
+
+                        <p className="text-desc" style={{ marginBottom: '24px', fontSize: '13px', lineHeight: 1.5, color: '#ccc' }}>
+                            서버 PC를 항상 켜둘 필요 없이, 코드를 Vercel에 올려두면 평생 무료로 나만의 여행 비서 웹앱을 운영할 수 있습니다. API 키는 코드에 올라가지 않고, 본인(그리고 본인과 주소를 공유한 사람)의 휴대폰에만 저장되어 완벽히 안전합니다.
+                        </p>
+
+                        <div style={{ marginBottom: '16px', padding: '16px', backgroundColor: '#222', borderRadius: '12px', border: '1px solid #333' }}>
+                            <h3 style={{ fontSize: '15px', color: 'var(--primary-light)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>code_blocks</span>
+                                1. GitHub에 소스코드 올리기
+                            </h3>
+                            <p style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.5, margin: 0 }}>
+                                GitHub에서 새 Repository(예: `smart-travel-app`)를 생성한 뒤, 현재 코드가 있는 폴더 터미널에서 다음을 차례로 입력하세요.<br />
+                                <code style={{ backgroundColor: '#000', padding: '6px', borderRadius: '4px', display: 'block', marginTop: '8px', color: '#fff', fontSize: '11px', whiteSpace: 'pre' }}>
+                                    git init<br />
+                                    git add .<br />
+                                    git commit -m "Travel App Initial Commit"<br />
+                                    git branch -M main<br />
+                                    git remote add origin [내 깃허브 주소]<br />
+                                    git push -u origin main
+                                </code>
+                            </p>
+                        </div>
+
+                        <div style={{ marginBottom: '16px', padding: '16px', backgroundColor: '#222', borderRadius: '12px', border: '1px solid #333' }}>
+                            <h3 style={{ fontSize: '15px', color: '#ffeb3b', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>cloud_done</span>
+                                2. Vercel에서 배포하기
+                            </h3>
+                            <p style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.5, margin: 0 }}>
+                                1. <a href="https://vercel.com" target="_blank" rel="noreferrer" style={{ color: 'var(--primary-light)' }}>Vercel.com</a> 에 깃허브 계정으로 로그인합니다.<br />
+                                2. 대시보드에서 <b>Add New... &gt; Project</b> 클릭<br />
+                                3. 방금 올린 저장소 옆의 <b>Import</b> 클릭<br />
+                                4. 기타 설정 없이 파란색 <b>Deploy</b> 버튼 클릭!
+                            </p>
+                            <p style={{ fontSize: '12px', color: '#ffb74d', marginTop: '12px', padding: '8px', backgroundColor: 'rgba(255, 152, 0, 0.1)', borderRadius: '6px' }}>
+                                💡 약 1분 후 `https://머시기.vercel.app` 형태의 배포 주소가 제공됩니다!
+                            </p>
+                        </div>
+
+                        <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#222', borderRadius: '12px', border: '1px solid #333' }}>
+                            <h3 style={{ fontSize: '15px', color: '#4caf50', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>smartphone</span>
+                                3. 스마트폰에서 영구 사용 설정
+                            </h3>
+                            <p style={{ fontSize: '12px', color: '#aaa', lineHeight: 1.5, margin: 0 }}>
+                                Vercel에서 발급한 주소를 스마트폰 웹브라우저(크롬, 사파리)로 엽니다.<br />
+                                <b>✅ [홈 화면에 추가]</b> 하시면 마치 네이티브 앱 아이콘처럼 바탕화면에 저장되어 24시간 언제든 여행지에서 접속할 수 있습니다.
+                            </p>
+                        </div>
+
+                        <button
+                            className="action-button full-width dark-bg"
+                            onClick={() => setStep(1)}
+                        >
+                            <span className="material-symbols-outlined text-gray">arrow_back</span> 기존 설정 화면으로 돌아가기
+                        </button>
                     </div>
                 )}
 
