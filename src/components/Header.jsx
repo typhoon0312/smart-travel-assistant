@@ -3,10 +3,17 @@ import React, { useState, useEffect } from 'react';
 function Header({ onOpenSettings }) {
     const [currentDate, setCurrentDate] = useState('');
 
+    const [appName, setAppName] = useState('여행 준비 중');
+
     useEffect(() => {
         const today = new Date();
         const options = { month: 'long', day: 'numeric', weekday: 'long' };
         setCurrentDate(today.toLocaleDateString('ko-KR', options));
+
+        const savedAppName = localStorage.getItem('APP_NAME');
+        if (savedAppName) {
+            setAppName(savedAppName);
+        }
     }, []);
 
     return (
@@ -14,7 +21,7 @@ function Header({ onOpenSettings }) {
             <div className="header-top">
                 <div className="header-info">
                     <p className="date-badge">{currentDate}</p>
-                    <h1 className="page-title">여행 준비 중</h1>
+                    <h1 className="page-title">{appName}</h1>
                 </div>
                 <div className="header-actions">
                     <div className="weather-info">

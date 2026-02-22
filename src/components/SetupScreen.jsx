@@ -9,6 +9,7 @@ function SetupScreen({ onComplete, isEditing = false }) {
     });
 
     const [profile, setProfile] = useState({
+        appName: localStorage.getItem('APP_NAME') || '',
         name: localStorage.getItem('USER_NAME') || '',
         favoriteStyle: localStorage.getItem('TRAVEL_STYLE') || '현지인처럼',
     });
@@ -35,6 +36,7 @@ function SetupScreen({ onComplete, isEditing = false }) {
 
         // 로컬 스토리지에 사용자 고유 키 저장
         localStorage.setItem('GEMINI_API_KEY', keys.gemini);
+        localStorage.setItem('APP_NAME', profile.appName || '나만의 스마트 여행 비서');
         localStorage.setItem('USER_NAME', profile.name);
         localStorage.setItem('TRAVEL_STYLE', profile.favoriteStyle);
 
@@ -52,12 +54,25 @@ function SetupScreen({ onComplete, isEditing = false }) {
                 {step === 1 && (
                     <div className="fade-in">
                         <h2 style={{ marginBottom: '8px', fontSize: '24px' }}>{isEditing ? '환경 설정 ✨' : '환영합니다 ✨'}</h2>
-                        <p className="text-desc" style={{ marginBottom: '24px' }}>오픈소스 스마트 여행 앱 초기 설정입니다.<br />아래 API 키들은 기기 내부에만 안전하게 저장됩니다.</p>
+                        <p className="text-desc" style={{ marginBottom: '24px' }}>오픈소스 스마트 여행 앱 초기 설정입니다.<br />개인정보 및 API 키는 외부에 유출되지 않고 오직 접속하신 기기 내부에만 안전하게 저장됩니다.</p>
+
+                        <div style={{ marginBottom: '16px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                <label style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>나만의 앱 이름 (선택)</label>
+                            </div>
+                            <input
+                                type="text"
+                                value={profile.appName}
+                                onChange={e => setProfile({ ...profile, appName: e.target.value })}
+                                placeholder="예: 철중이의 오사카 비서"
+                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #333', background: '#222', color: '#fff' }}
+                            />
+                        </div>
 
                         <div style={{ marginBottom: '16px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                                 <label style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Gemini API Key (필수)</label>
-                                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: 'var(--primary-light)', textDecoration: 'none' }}>발급 ↗</a>
+                                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: 'var(--primary-light)', textDecoration: 'none' }}>AI 핵심 두뇌 무료 발급 링크 ↗</a>
                             </div>
                             <input
                                 type="password"
@@ -71,7 +86,7 @@ function SetupScreen({ onComplete, isEditing = false }) {
                         <div style={{ marginBottom: '16px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                                 <label style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Google Maps API Key (선택)</label>
-                                <a href="https://console.cloud.google.com/google/maps-apis/credentials" target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: 'var(--primary-light)', textDecoration: 'none' }}>발급 ↗</a>
+                                <a href="https://console.cloud.google.com/google/maps-apis/credentials" target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: 'var(--primary-light)', textDecoration: 'none' }}>지도 시각화 키 발급 ↗</a>
                             </div>
                             <input
                                 type="password"
@@ -85,7 +100,7 @@ function SetupScreen({ onComplete, isEditing = false }) {
                         <div style={{ marginBottom: '16px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                                 <label style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Google Translate API (선택)</label>
-                                <a href="https://console.cloud.google.com/apis/library/translate.googleapis.com" target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: 'var(--primary-light)', textDecoration: 'none' }}>발급 ↗</a>
+                                <a href="https://console.cloud.google.com/apis/library/translate.googleapis.com" target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: 'var(--primary-light)', textDecoration: 'none' }}>번역 API 발급 링크 ↗</a>
                             </div>
                             <input
                                 type="password"
@@ -99,7 +114,7 @@ function SetupScreen({ onComplete, isEditing = false }) {
                         <div style={{ marginBottom: '24px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                                 <label style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Google OAuth Client ID (선택)</label>
-                                <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: 'var(--primary-light)', textDecoration: 'none' }}>발급 ↗</a>
+                                <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: 'var(--primary-light)', textDecoration: 'none' }}>캘린더 연동 클라이언트 ID 발급 ↗</a>
                             </div>
                             <input
                                 type="text"
@@ -200,6 +215,24 @@ function SetupScreen({ onComplete, isEditing = false }) {
                             </p>
                         </div>
 
+                        <div style={{ marginBottom: '16px', padding: '16px', backgroundColor: '#222', borderRadius: '12px', border: '1px solid #333' }}>
+                            <h3 style={{ fontSize: '15px', color: '#ffb74d', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>help</span>
+                                Vercel 배포 후 사용방법
+                            </h3>
+                            <p style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.5, margin: 0 }}>
+                                1. 제공된 `vercel.app` 링크를 브라우저에 입력하여 언제라도 접속합니다.<br />
+                                2. 처음 접속하는 기기마다 발급받은 API 키를 한 번씩 입력하여 로그인 없이 안전하게 개인화해서 사용합니다.<br />
+                                3. 친구나 가족에게 링크를 공유할 경우, 각자의 핸드폰에서 본인만의 API 키를 입력하게 되므로 내 과금이나 개인정보 유출 우려가 전혀 없습니다.
+                            </p>
+                        </div>
+
+                        <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: 'rgba(255, 105, 180, 0.1)', borderRadius: '12px', border: '1px solid rgba(255, 105, 180, 0.3)', textAlign: 'center' }}>
+                            <p style={{ fontSize: '15px', color: '#ff69b4', margin: 0, fontWeight: 'bold' }}>
+                                ✨ 이 프로그램 사용하는 모든 분들 행복하세요! ✨
+                            </p>
+                        </div>
+
                         <button
                             className="action-button full-width dark-bg"
                             onClick={() => setStep(1)}
@@ -262,6 +295,12 @@ function SetupScreen({ onComplete, isEditing = false }) {
                             </p>
                         </div>
 
+                        <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: 'rgba(255, 105, 180, 0.1)', borderRadius: '12px', border: '1px solid rgba(255, 105, 180, 0.3)', textAlign: 'center' }}>
+                            <p style={{ fontSize: '15px', color: '#ff69b4', margin: 0, fontWeight: 'bold' }}>
+                                ✨ 이 프로그램 사용하는 모든 분들 행복하세요! ✨
+                            </p>
+                        </div>
+
                         <button
                             className="action-button full-width dark-bg"
                             onClick={() => setStep(1)}
@@ -318,6 +357,12 @@ function SetupScreen({ onComplete, isEditing = false }) {
                             >
                                 앱 완성하기 <span className="material-symbols-outlined">check_circle</span>
                             </button>
+                        </div>
+
+                        <div style={{ marginTop: '32px', textAlign: 'center', padding: '16px', borderRadius: '12px', backgroundColor: 'rgba(255, 105, 180, 0.1)', border: '1px solid rgba(255, 105, 180, 0.3)' }}>
+                            <p style={{ fontSize: '15px', color: '#ff69b4', margin: 0, fontWeight: 'bold' }}>
+                                ✨ 이 프로그램 사용하는 모든 분들 행복하세요! ✨
+                            </p>
                         </div>
                     </div>
                 )}

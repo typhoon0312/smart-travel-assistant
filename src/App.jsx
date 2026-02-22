@@ -5,12 +5,12 @@ import Header from './components/Header';
 import BottomNav from './components/BottomNav';
 import FloatingAction from './components/FloatingAction';
 import TransitCard from './components/cards/TransitCard';
-import RecommendationCard from './components/cards/RecommendationCard';
 import EtiquetteCard from './components/cards/EtiquetteCard';
 import DiningCard from './components/cards/DiningCard';
 import RestroomCard from './components/cards/RestroomCard';
 import ItineraryManager from './components/ItineraryManager';
 import TravelDiary from './components/TravelDiary';
+import VirtualTour from './components/VirtualTour';
 import { generateSmartTips } from './services/ai';
 import './index.css';
 
@@ -23,6 +23,7 @@ function App() {
   const [events, setEvents] = useState([]);
   const [aiData, setAiData] = useState(null);
   const [loadingAI, setLoadingAI] = useState(false);
+  const [isVirtualTourOpen, setIsVirtualTourOpen] = useState(false);
 
   const mapApiKey = localStorage.getItem('GOOGLE_MAPS_API_KEY');
   const clientId = localStorage.getItem('GOOGLE_CLIENT_ID') || 'dummy-client-id';
@@ -103,7 +104,17 @@ function App() {
 
                 {events.length > 0 && (
                   <div className="fade-in mb-3">
-                    <h3 className="section-title text-gray mb-1" style={{ fontSize: '14px', marginLeft: '8px' }}>나의 일정 타임라인</h3>
+                    <div className="flex-between mb-1" style={{ marginLeft: '8px' }}>
+                      <h3 className="section-title text-gray mb-0" style={{ fontSize: '14px' }}>나의 일정 타임라인</h3>
+                      <button
+                        className="action-button primary-bg shadow-glow pulse"
+                        style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '20px' }}
+                        onClick={() => setIsVirtualTourOpen(true)}
+                      >
+                        <span className="material-symbols-outlined mr-1" style={{ fontSize: '14px' }}>360</span>
+                        가상 체험 시작
+                      </button>
+                    </div>
                     {events.map((ev, idx) => (
                       <div key={idx} className="card bg-card-light padding-md mb-2 flex-between border-medium hover-scale" style={{ borderRadius: '12px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -151,6 +162,10 @@ function App() {
 
         {events.length > 0 && activeTab === 'itinerary' && <FloatingAction />}
         <BottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
+
+        {isVirtualTourOpen && (
+          <VirtualTour events={events} onClose={() => setIsVirtualTourOpen(false)} />
+        )}
       </div>
     </GoogleOAuthProvider>
   );

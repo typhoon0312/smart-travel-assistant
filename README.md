@@ -1,16 +1,55 @@
-# React + Vite
+# ✈️ 나만의 스마트 여행 비서 (Smart Travel Assistant)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**나만의 스마트 여행 비서**는 생성형 AI(Gemini)를 활용하여 여행 일정을 관리하고, 지도를 확인하며, 현지 언어로 소통할 수 있도록 돕는 개인 맞춤형 웹 앱입니다. 복잡한 여행 일정을 단순히 텍스트로 업로드하기만 하면 AI가 분석하여 시간대별로 완벽하게 정리해 줍니다. 
 
-Currently, two official plugins are available:
+**오픈소스로 제공**되며, 누구나 쉽게 Vercel을 통해 무료로 자신만의 여행 앱을 배포하고 사용할 수 있습니다! ✨ 이 프로그램 사용하는 모든 분들 여행길에 행복이 가득하시길 바랍니다! ✨
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🌟 전체 기능 안내
+- **🧠 AI 일정 분석 (Gemini API 기반)**: 노션, 카카오톡, 메모장에 어지럽게 적어둔 여행 계획을 복사해서 붙여넣으면, AI가 알아서 시간순/날짜별 동선으로 깔끔하게 스마트폰 화면에 최적화하여 보여줍니다.
+- **🗺 지도 연동 (Google Maps API)**: 등록된 일정의 장소를 클릭하면 구글 지도에서 즉시 위치를 확인하고 길찾기를 할 수 있습니다. (구글 맵 키 입력 시 기능 활성화)
+- **💬 실시간 통역기 (Google Translate API)**: 여행지 현지인과 대화할 때나 식당 메뉴판을 앱 내에서 빠르고 간편하게 번역합니다.
+- **🗓 스마트폰 캘린더 연동 (Google OAuth)**: 내 구글 캘린더에 여행 일정을 연동하고 가져올 수 있습니다.
+- **🔐 안전한 보안 아키텍처**: 입력된 소중한 개인정보와 API 토큰들은 서버에 전송되지 않고, 오직 설정하신 **본인 스마트폰/PC의 로컬 브라우저 내부(localStorage)에만 안전하게 보관**됩니다! 주소를 공유한 친구나 낯선 사람은 본인의 기기에서 **각자의 키를 입력해야만 접속 가능**하므로 타인에 의한 API 과금 폭탄 걱정이 없습니다.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠 사용 및 설치 방법 가이드
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1단계: 무료 API 키 발급 받기
+앱의 모든 기능을 100% 활용하기 위해 아래 키들을 무료 발급받아 준비합니다.
+1. **Gemini API Key (필수!)**: AI 일정 분석을 위한 핵심 두뇌. [Google AI Studio](https://aistudio.google.com/app/apikey)에서 무료 발급.
+2. **Google Maps API (선택)**: 지도 길찾기용. [Google Cloud Console](https://console.cloud.google.com/)에서 Maps JavaScript API 활성화 및 키 발급.
+3. **Google Translate API (선택)**: 실시간 번역용. 위 콘솔에서 Cloud Translation API 활성화.
+4. **Google OAuth Client ID (선택)**: 캘린더 연동용. OAuth 동의 화면 구성 후 '웹 애플리케이션'용 클라이언트 ID 발급. (*승인된 자바스크립트 원본에 배포할 주소와 `http://localhost:5173` 추가 필수*)
+
+### 2단계: 앱 초기 설정 및 사용 (전체 여행일정 업로드)
+1. 앱에 접속하여 **환영합니다 ✨** 초기 화면에서 1단계에서 발급받은 키와 설정할 "앱 이름"을 입력합니다.
+2. 설정이 완료되면 메인 화면 하단 **'📝 일정 편집'** 탭으로 들어갑니다.
+3. 복사해둔 전체 여행 계획(텍스트 형태)을 입력창에 붙여넣고 버튼을 누릅니다.
+4. 잠깐의 AI 분석 시간이 지나면 완벽하고 예쁜 UI로 시간별 일정이 생성됩니다!
+
+---
+
+## 🚀 Vercel 1분 무료 배포 가이드 (나만의 링크 만들기)
+내 폰 화면에 앱처럼 띄우거나 가족과 링크를 공유하기 위해서 24시간 꺼지지 않는 Vercel로 무료 배포를 진행합니다.
+
+1. **GitHub 연동**: 지금 보시는 코드를 본인의 개인 GitHub 레포지토리에 푸시(Push)합니다.
+2. **Vercel 가입**: [Vercel](https://vercel.com/) 사이트에 접속하여 GitHub 계정으로 로그인합니다.
+3. **새 프로젝트 만들기**: 대시보드에서 `Add New` > `Project`를 클릭합니다.
+4. **저장소 연결(Import)**: 좀 전에 생성한 GitHub 레포지토리를 찾아 `Import` 버튼을 누릅니다.
+5. **빌드 설정(Framework Preset)**: `Vite`가 자동으로 선택되며 배포 설정은 기본값 그대로 유지합니다. (*환경변수(Environment Variables)는 별도로 입력하지 않으셔도 됩니다. 앱 화면에서 각자 입력하는 방식입니다*)
+6. **Deploy(배포)**: 파란색 `Deploy` 버튼을 클릭하고 1분만 기다리시면, 나만의 `.vercel.app` 웹사이트 주소가 탄생합니다!
+
+---
+
+## 🧑‍💻 나만의 기능 추가 코딩해보기 (커스터마이징)
+본 앱은 React + TailwindCSS + Vite 환경으로 구성된 순수 프론트엔드 오픈소스입니다. 부족한 부분이나 더 원하는 나만의 커스텀 기능이 있다면 코딩을 통해 자유롭게 추가해 보세요!
+
+- **디자인 변경**: `/src/index.css` 나 컴포넌트 내부의 Tailwind 클래스를 수정하여 버튼 색상, 배경 등 UI를 꾸밀 수 있습니다.
+- **새로운 탭/화면 추가**: 환율 계산기 탭이나 여권 사본 등 사진 저장 탭이 필요하신가요? `/src/App.jsx` 하단 네비게이션 구조에 탭 항목을 추가하고, `/src/components/` 폴더에 `ExchangeRate.jsx` 같은 새 파일을 만들어 연동해보세요.
+- **날씨 API 연동**: 현재 앱 상단의 날씨 표시는 정적 아이콘입니다. OpenWeatherMap 등의 API를 발급받아 여행지의 실제 날씨가 표시되도록 `Header.jsx`를 심화 코딩 해보는 것도 훌륭한 프로젝트입니다.
+
+문제가 생기면 언제든지 Claude나 다른 LLM 코딩 어시스턴트에게 물어보세요!
+행복하고 안전한 여행 되시길 바랍니다. ✈️🎒

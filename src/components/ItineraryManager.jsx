@@ -68,10 +68,16 @@ function ItineraryManager({ onAddEvent }) {
         }
 
         setLoading(true);
-        // 1. AI 파싱
-        const events = await parseFreeformItinerary(inputText);
-        if (!events || events.length === 0) {
-            alert('AI가 일정을 분석하지 못했습니다. 형식을 좀 더 구체적으로 적어주세요.');
+        let events;
+        try {
+            events = await parseFreeformItinerary(inputText);
+            if (!events || events.length === 0) {
+                alert('AI가 일정을 분석하지 못했습니다. 형식을 좀 더 구체적으로 적어주세요.');
+                setLoading(false);
+                return;
+            }
+        } catch (error) {
+            alert('AI 분석 중 에러가 발생했습니다: ' + error.message);
             setLoading(false);
             return;
         }
